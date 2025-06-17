@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcolatore Costi Auto Mensili</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stili base Material Design 3 con ispirazione Made in Italy */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Leggerissimo tono di grigio-blu */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1.5rem; /* Padding generoso per un feel mobile ottimale */
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #ffffff; /* Sfondo bianco puro per il contenitore principale */
+            border-radius: 2rem; /* Angoli molto arrotondati per un look moderno e morbido */
+            box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.1), 0 6px 12px -6px rgba(0, 0, 0, 0.08); /* Ombra più pronunciata e morbida */
+            padding: 2.5rem; /* Padding interno generoso */
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem; /* Spaziatura consistente tra le sezioni */
+        }
+
+        /* Stile per i gruppi di input */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem; /* Spazio tra etichetta e input */
+        }
+        .input-group label {
+            font-weight: 500; /* Peso del font medio per le etichette */
+            color: #374151; /* Grigio scuro per buona leggibilità */
+            font-size: 0.95rem;
+        }
+        .input-group input[type="number"],
+        .input-group input[type="text"] {
+            padding: 0.95rem; /* Padding maggiore per un touch target più confortevole */
+            border: 1px solid #d1d5db; /* Bordo grigio chiaro */
+            border-radius: 0.75rem; /* Input con angoli arrotondati */
+            font-size: 1rem;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            -moz-appearance: textfield; /* Nasconde le frecce in Firefox */
+        }
+        .input-group input[type="number"]::-webkit-outer-spin-button,
+        .input-group input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none; /* Nasconde le frecce in Chrome, Safari, Edge */
+            margin: 0;
+        }
+        .input-group input[type="number"]:focus,
+        .input-group input[type="text"]:focus {
+            outline: none;
+            border-color: #4f46e5; /* Indaco per il focus */
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2); /* Anello di focus discreto */
+        }
+
+        /* Stile per il pulsante primario */
+        .button-primary {
+            background-color: #4338ca; /* Indaco profondo per l'azione principale */
+            color: #ffffff;
+            padding: 1rem 2rem; /* Padding più ampio per un'azione più evidente */
+            border-radius: 0.75rem; /* Angoli arrotondati */
+            font-weight: 600; /* Semibold */
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: 0 5px 15px -5px rgba(0, 0, 0, 0.1), 0 2px 6px -2px rgba(0, 0, 0, 0.08); /* Ombra predefinita */
+        }
+        .button-primary:hover {
+            background-color: #3730a3; /* Indaco più scuro all'hover */
+            box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.15), 0 4px 8px -4px rgba(0, 0, 0, 0.1); /* Ombra accentuata all'hover */
+        }
+
+        /* Stile per la sezione dei risultati */
+        .results-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem; /* Spaziatura tra le schede dei risultati */
+            margin-top: 1.5rem;
+            border-top: 1px solid #e0e7ff; /* Separatore leggero blu-violetto */
+            padding-top: 1.5rem;
+        }
+        .results-section h2 {
+            font-size: 1.8rem; /* Titolo più grande per i risultati */
+            font-weight: 700;
+            color: #312e81; /* Indaco più scuro per i titoli */
+            margin-bottom: 0.5rem;
+        }
+
+        /* Stile per le singole schede dei risultati auto */
+        .car-result {
+            background-color: #eff6ff; /* Azzurro pastello molto chiaro per le schede */
+            border: 1px solid #bfdbfe; /* Bordo azzurro più marcato */
+            border-radius: 1.5rem; /* Angoli arrotondati per le schede */
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            box-shadow: 0 4px 10px -5px rgba(0,0,0,0.08); /* Ombra sottile per le schede */
+        }
+        .car-result h3 {
+            font-size: 1.45rem;
+            font-weight: 600;
+            color: #4b5563;
+        }
+        .car-result p {
+            font-size: 1rem;
+            color: #6b7280;
+        }
+        .car-result .cost-value {
+            font-weight: 700;
+            color: #1f2937;
+        }
+        .cost-value.total {
+            font-size: 1.25rem; /* Larger font for total cost */
+            color: #4338ca; /* Indigo for emphasis on total */
+        }
+
+
+        /* Stile per i messaggi di errore */
+        .error-message {
+            color: #ef4444; /* Rosso vibrante per gli errori */
+            font-size: 0.875rem;
+            margin-top: 0.3rem; /* Vicino all'input */
+        }
+        /* Stile per i titoli delle sezioni delle auto */
+        .car-section-title {
+            grid-column: 1 / -1; /* Occupa l'intera larghezza nella griglia */
+            font-size: 1.6rem; /* Titolo più grande e prominente */
+            font-weight: 700;
+            color: #4338ca; /* Indaco per coerenza */
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed #c7d2fe; /* Linea tratteggiata indaco molto chiara */
+        }
+
+        /* Adattamenti responsive per schermi più grandi */
+        @media (min-width: 768px) {
+            .container {
+                padding: 3rem;
+            }
+            .grid-cols-1.md\:grid-cols-2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-3xl font-extrabold text-center text-gray-900 mb-6">Calcolatore Costi Auto Mensili</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Dati Generali -->
+            <div class="input-group">
+                <label for="gasolineCost">Costo della benzina al litro (€/L):</label>
+                <input type="number" id="gasolineCost" value="1.85" min="0.01" step="0.01">
+                <p id="gasolineError" class="error-message hidden">Inserisci un valore valido per il costo della benzina.</p>
+            </div>
+            <div class="input-group">
+                <label for="electricityCost">Costo dell'elettricità al kWh (€/kWh):</label>
+                <input type="number" id="electricityCost" value="0.30" min="0.01" step="0.01">
+                <p id="electricityError" class="error-message hidden">Inserisci un valore valido per il costo dell'elettricità.</p>
+            </div>
+            <div class="input-group">
+                <label for="dailyKm">Chilometri percorsi al giorno (km):</label>
+                <input type="number" id="dailyKm" value="50" min="1" step="1">
+                <p id="dailyKmError" class="error-message hidden">Inserisci un valore valido per i chilometri giornalieri.</p>
+            </div>
+            <div class="input-group">
+                <label for="electricPercentage">Percentuale di guida in elettrico (%):</label>
+                <input type="number" id="electricPercentage" value="70" min="0" max="100" step="1">
+                <p id="electricPercentageError" class="error-message hidden">Inserisci una percentuale valida (0-100).</p>
+            </div>
+
+            <!-- Dati Auto 1 -->
+            <div class="car-section-title">Dati Auto 1</div>
+            <div class="input-group">
+                <label for="car1Name">Nome Auto 1 (es. Leapmotor C10 REEV):</label>
+                <input type="text" id="car1Name" value="Leapmotor C10 REEV">
+                <p id="car1NameError" class="error-message hidden">Inserisci il nome dell'auto 1.</p>
+            </div>
+            <div class="input-group">
+                <label for="car1FuelConsumption">Consumo Carburante Auto 1 (L/100km, a batteria scarica):</label>
+                <input type="number" id="car1FuelConsumption" value="0.4" min="0" step="0.01">
+                <p id="car1FuelConsumptionError" class="error-message hidden">Inserisci un valore valido.</p>
+            </div>
+            <div class="input-group">
+                <label for="car1ElectricRange">Autonomia Elettrica Auto 1 (km):</label>
+                <input type="number" id="car1ElectricRange" value="145" min="0" step="1">
+                <p id="car1ElectricRangeError" class="error-message hidden">Inserisci un valore valido.</p>
+            </div>
+            <div class="input-group">
+                <label for="car1BatteryCapacity">Capacità Batteria Auto 1 (kWh):</label>
+                <input type="number" id="car1BatteryCapacity" value="28.4" min="0.1" step="0.1">
+                <p id="car1BatteryCapacityError" class="error-message hidden">Inserisci un valore valido.</p>
+            </div>
+            <div class="input-group">
+                <label for="car1LoanPayment">Rata Mensile Finanziamento Auto 1 (€):</label>
+                <input type="number" id="car1LoanPayment" value="199" min="0" step="1">
+                <p id="car1LoanError" class="error-message hidden">Inserisci un valore valido per la rata.</p>
+            </div>
+            <div class="input-group">
+                <label for="car1InsuranceCost">Costo Mensile Assicurazione Auto 1 (€):</label>
+                <input type="number" id="car1InsuranceCost" value="50" min="0" step="1">
+                <p id="car1InsuranceError" class="error-message hidden">Inserisci un valore valido per l'assicurazione.</p>
+            </div>
+            <div class="input-group">
+                <label for="car1RoadTaxAnnual">Costo Annuale Bollo Auto 1 (€):</label>
+                <input type="number" id="car1RoadTaxAnnual" value="200" min="0" step="1">
+                <p id="car1RoadTaxError" class="error-message hidden">Inserisci un valore valido per il bollo.</p>
+            </div>
+            <div class="input-group">
+                <label for="car1MaintenanceCost">Costo Mensile Manutenzione Auto 1 (€, stimato):</label>
+                <input type="number" id="car1MaintenanceCost" value="30" min="0" step="1">
+                <p id="car1MaintenanceError" class="error-message hidden">Inserisci un valore valido per la manutenzione.</p>
+            </div>
+            <div class="input-group">
+                <label for="car1TireCost">Costo Mensile Pneumatici Auto 1 (€, stimato):</label>
+                <input type="number" id="car1TireCost" value="15" min="0" step="1">
+                <p id="car1TireError" class="error-message hidden">Inserisci un valore valido per i pneumatici.</p>
+            </div>
+            <div class="input-group">
+                <label for="car1DepreciationCost">Costo Mensile Svalutazione Auto 1 (€, stimato):</label>
+                <input type="number" id="car1DepreciationCost" value="100" min="0" step="1">
+                <p id="car1DepreciationError" class="error-message hidden">Inserisci un valore valido per la svalutazione.</p>
+            </div>
+
+
+            <!-- Dati Auto 2 -->
+            <div class="car-section-title">Dati Auto 2</div>
+            <div class="input-group">
+                <label for="car2Name">Nome Auto 2 (es. Hyundai Tucson PHEV):</label>
+                <input type="text" id="car2Name" value="Hyundai Tucson Plug-in Hybrid">
+                <p id="car2NameError" class="error-message hidden">Inserisci il nome dell'auto 2.</p>
+            </div>
+            <div class="input-group">
+                <label for="car2FuelConsumption">Consumo Carburante Auto 2 (L/100km, a batteria scarica):</label>
+                <input type="number" id="car2FuelConsumption" value="6.7" min="0" step="0.01">
+                <p id="car2FuelConsumptionError" class="error-message hidden">Inserisci un valore valido.</p>
+            </div>
+            <div class="input-group">
+                <label for="car2ElectricRange">Autonomia Elettrica Auto 2 (km):</label>
+                <input type="number" id="car2ElectricRange" value="71" min="0" step="1">
+                <p id="car2ElectricRangeError" class="error-message hidden">Inserisci un valore valido.</p>
+            </div>
+            <div class="input-group">
+                <label for="car2BatteryCapacity">Capacità Batteria Auto 2 (kWh):</label>
+                <input type="number" id="car2BatteryCapacity" value="13.8" min="0.1" step="0.1">
+                <p id="car2BatteryCapacityError" class="error-message hidden">Inserisci un valore valido.</p>
+            </div>
+            <div class="input-group">
+                <label for="car2LoanPayment">Rata Mensile Finanziamento Auto 2 (€):</label>
+                <input type="number" id="car2LoanPayment" value="326" min="0" step="1">
+                <p id="car2LoanError" class="error-message hidden">Inserisci un valore valido per la rata.</p>
+            </div>
+            <div class="input-group">
+                <label for="car2InsuranceCost">Costo Mensile Assicurazione Auto 2 (€):</label>
+                <input type="number" id="car2InsuranceCost" value="60" min="0" step="1">
+                <p id="car2InsuranceError" class="error-message hidden">Inserisci un valore valido per l'assicurazione.</p>
+            </div>
+            <div class="input-group">
+                <label for="car2RoadTaxAnnual">Costo Annuale Bollo Auto 2 (€):</label>
+                <input type="number" id="car2RoadTaxAnnual" value="300" min="0" step="1">
+                <p id="car2RoadTaxError" class="error-message hidden">Inserisci un valore valido per il bollo.</p>
+            </div>
+            <div class="input-group">
+                <label for="car2MaintenanceCost">Costo Mensile Manutenzione Auto 2 (€, stimato):</label>
+                <input type="number" id="car2MaintenanceCost" value="35" min="0" step="1">
+                <p id="car2MaintenanceError" class="error-message hidden">Inserisci un valore valido per la manutenzione.</p>
+            </div>
+            <div class="input-group">
+                <label for="car2TireCost">Costo Mensile Pneumatici Auto 2 (€, stimato):</label>
+                <input type="number" id="car2TireCost" value="18" min="0" step="1">
+                <p id="car2TireError" class="error-message hidden">Inserisci un valore valido per i pneumatici.</p>
+            </div>
+            <div class="input-group">
+                <label for="car2DepreciationCost">Costo Mensile Svalutazione Auto 2 (€, stimato):</label>
+                <input type="number" id="car2DepreciationCost" value="120" min="0" step="1">
+                <p id="car2DepreciationError" class="error-message hidden">Inserisci un valore valido per la svalutazione.</p>
+            </div>
+        </div>
+
+        <button id="calculateButton" class="button-primary mt-4">Calcola Costi Mensili</button>
+
+        <div class="results-section hidden" id="resultsSection">
+            <h2 class="text-2xl font-bold text-gray-900">Costi Mensili Stimati</h2>
+
+            <div class="car-result">
+                <h3 id="car1ResultName">Leapmotor C10 REEV</h3>
+                <p>Costo Elettricità Mensile: <span id="car1ElectricCostMonthly" class="cost-value">€0.00</span></p>
+                <p>Costo Carburante Mensile: <span id="car1FuelCostMonthly" class="cost-value">€0.00</span></p>
+                <p>Rata Finanziamento Mensile: <span id="car1LoanPaymentMonthly" class="cost-value">€0.00</span></p>
+                <p>Costo Assicurazione Mensile: <span id="car1InsuranceCostMonthly" class="cost-value">€0.00</span></p>
+                <p>Costo Bollo Mensile: <span id="car1RoadTaxMonthly" class="cost-value">€0.00</span></p>
+                <p>Costo Manutenzione Mensile: <span id="car1MaintenanceCostMonthly" class="cost-value">€0.00</span></p>
+                <p>Costo Pneumatici Mensile: <span id="car1TireCostMonthly" class="cost-value">€0.00</span></p>
+                <p>Costo Svalutazione Mensile: <span id="car1DepreciationCostMonthly" class="cost-value">€0.00</span></p>
+                <p class="mt-4 text-xl font-semibold">Costo Totale Mensile: <span id="car1TotalCostMonthly" class="cost-value total">€0.00</span></p>
+            </div>
+
+            <div class="car-result">
+                <h3 id="car2ResultName">Hyundai Tucson Plug-in Hybrid</h3>
+                <p>Costo Elettricità Mensile: <span id="car2ElectricCostMonthly" class="cost-value">€0.00</span></p>
+                <p>Costo Carburante Mensile: <span id="car2FuelCostMonthly" class="cost-value">€0.00</span></p>
+                <p>Rata Finanziamento Mensile: <span id="car2LoanPaymentMonthly" class="cost-value">€0.00</span></p>
+                <p>Costo Assicurazione Mensile: <span id="car2InsuranceCostMonthly" class="cost-value">€0.00</span></p>
+                <p>Costo Bollo Mensile: <span id="car2RoadTaxMonthly" class="cost-value">€0.00</span></p>
+                <p>Costo Manutenzione Mensile: <span id="car2MaintenanceCostMonthly" class="cost-value">€0.00</span></p>
+                <p>Costo Pneumatici Mensile: <span id="car2TireCostMonthly" class="cost-value">€0.00</span></p>
+                <p>Costo Svalutazione Mensile: <span id="car2DepreciationCostMonthly" class="cost-value">€0.00</span></p>
+                <p class="mt-4 text-xl font-semibold">Costo Totale Mensile: <span id="car2TotalCostMonthly" class="cost-value total">€0.00</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // General Inputs
+            const gasolineCostInput = document.getElementById('gasolineCost');
+            const electricityCostInput = document.getElementById('electricityCost');
+            const dailyKmInput = document.getElementById('dailyKm');
+            const electricPercentageInput = document.getElementById('electricPercentage');
+            const calculateButton = document.getElementById('calculateButton');
+            const resultsSection = document.getElementById('resultsSection');
+
+            // Car 1 Inputs
+            const car1NameInput = document.getElementById('car1Name');
+            const car1FuelConsumptionInput = document.getElementById('car1FuelConsumption');
+            const car1ElectricRangeInput = document.getElementById('car1ElectricRange');
+            const car1BatteryCapacityInput = document.getElementById('car1BatteryCapacity');
+            const car1LoanPaymentInput = document.getElementById('car1LoanPayment');
+            const car1InsuranceCostInput = document.getElementById('car1InsuranceCost');
+            const car1RoadTaxAnnualInput = document.getElementById('car1RoadTaxAnnual');
+            const car1MaintenanceCostInput = document.getElementById('car1MaintenanceCost');
+            const car1TireCostInput = document.getElementById('car1TireCost');
+            const car1DepreciationCostInput = document.getElementById('car1DepreciationCost');
+
+            // Car 2 Inputs
+            const car2NameInput = document.getElementById('car2Name');
+            const car2FuelConsumptionInput = document.getElementById('car2FuelConsumption');
+            const car2ElectricRangeInput = document.getElementById('car2ElectricRange');
+            const car2BatteryCapacityInput = document.getElementById('car2BatteryCapacity');
+            const car2LoanPaymentInput = document.getElementById('car2LoanPayment');
+            const car2InsuranceCostInput = document.getElementById('car2InsuranceCost');
+            const car2RoadTaxAnnualInput = document.getElementById('car2RoadTaxAnnual');
+            const car2MaintenanceCostInput = document.getElementById('car2MaintenanceCost');
+            const car2TireCostInput = document.getElementById('car2TireCost');
+            const car2DepreciationCostInput = document.getElementById('car2DepreciationCost');
+
+            // Result Spans for Car 1
+            const car1ResultNameSpan = document.getElementById('car1ResultName');
+            const car1ElectricCostMonthlySpan = document.getElementById('car1ElectricCostMonthly');
+            const car1FuelCostMonthlySpan = document.getElementById('car1FuelCostMonthly');
+            const car1LoanPaymentMonthlySpan = document.getElementById('car1LoanPaymentMonthly');
+            const car1InsuranceCostMonthlySpan = document.getElementById('car1InsuranceCostMonthly');
+            const car1RoadTaxMonthlySpan = document.getElementById('car1RoadTaxMonthly');
+            const car1MaintenanceCostMonthlySpan = document.getElementById('car1MaintenanceCostMonthly');
+            const car1TireCostMonthlySpan = document.getElementById('car1TireCostMonthly');
+            const car1DepreciationCostMonthlySpan = document.getElementById('car1DepreciationCostMonthly');
+            const car1TotalCostMonthlySpan = document.getElementById('car1TotalCostMonthly');
+
+            // Result Spans for Car 2
+            const car2ResultNameSpan = document.getElementById('car2ResultName');
+            const car2ElectricCostMonthlySpan = document.getElementById('car2ElectricCostMonthly');
+            const car2FuelCostMonthlySpan = document.getElementById('car2FuelCostMonthly');
+            const car2LoanPaymentMonthlySpan = document.getElementById('car2LoanPaymentMonthly');
+            const car2InsuranceCostMonthlySpan = document.getElementById('car2InsuranceCostMonthly');
+            const car2RoadTaxMonthlySpan = document.getElementById('car2RoadTaxMonthly');
+            const car2MaintenanceCostMonthlySpan = document.getElementById('car2MaintenanceCostMonthly');
+            const car2TireCostMonthlySpan = document.getElementById('car2TireCostMonthly');
+            const car2DepreciationCostMonthlySpan = document.getElementById('car2DepreciationCostMonthly');
+            const car2TotalCostMonthlySpan = document.getElementById('car2TotalCostMonthly');
+
+            // Error message elements for general inputs
+            const gasolineError = document.getElementById('gasolineError');
+            const electricityError = document.getElementById('electricityError');
+            const dailyKmError = document.getElementById('dailyKmError');
+            const electricPercentageError = document.getElementById('electricPercentageError');
+
+            // Error message elements for Car 1
+            const car1NameError = document.getElementById('car1NameError');
+            const car1FuelConsumptionError = document.getElementById('car1FuelConsumptionError');
+            const car1ElectricRangeError = document.getElementById('car1ElectricRangeError');
+            const car1BatteryCapacityError = document.getElementById('car1BatteryCapacityError');
+            const car1LoanError = document.getElementById('car1LoanError');
+            const car1InsuranceError = document.getElementById('car1InsuranceError');
+            const car1RoadTaxError = document.getElementById('car1RoadTaxError');
+            const car1MaintenanceError = document.getElementById('car1MaintenanceError');
+            const car1TireError = document.getElementById('car1TireError');
+            const car1DepreciationError = document.getElementById('car1DepreciationError');
+
+            // Error message elements for Car 2
+            const car2NameError = document.getElementById('car2NameError');
+            const car2FuelConsumptionError = document.getElementById('car2FuelConsumptionError');
+            const car2ElectricRangeError = document.getElementById('car2ElectricRangeError');
+            const car2BatteryCapacityError = document.getElementById('car2BatteryCapacityError');
+            const car2LoanError = document.getElementById('car2LoanError');
+            const car2InsuranceError = document.getElementById('car2InsuranceError');
+            const car2RoadTaxError = document.getElementById('car2RoadTaxError');
+            const car2MaintenanceError = document.getElementById('car2MaintenanceError');
+            const car2TireError = document.getElementById('car2TireError');
+            const car2DepreciationError = document.getElementById('car2DepreciationError');
+
+            /**
+             * Validates a single input field and shows/hides its error message.
+             * @param {HTMLInputElement} inputElement - The input field to validate.
+             * @param {HTMLElement} errorElement - The corresponding error message element.
+             * @param {boolean} allowZero - If true, 0 is considered a valid number.
+             * @param {boolean} isText - If true, validates as non-empty text.
+             * @returns {boolean} True if input is valid, false otherwise.
+             */
+            function validateField(inputElement, errorElement, allowZero = false, isText = false) {
+                let isValid = true;
+                if (isText) {
+                    if (inputElement.value.trim() === '') {
+                        isValid = false;
+                    }
+                } else {
+                    const value = parseFloat(inputElement.value);
+                    if (isNaN(value) || (value < 0 && !allowZero)) { // Negative values are not allowed unless explicitly allowedZero and value is 0
+                        isValid = false;
+                    } else if (!allowZero && value === 0 && inputElement.id !== 'car1MaintenanceCost' && inputElement.id !== 'car1TireCost' && inputElement.id !== 'car1DepreciationCost' && inputElement.id !== 'car2MaintenanceCost' && inputElement.id !== 'car2TireCost' && inputElement.id !== 'car2DepreciationCost') {
+                        // For core costs like gasoline, electricity, daily km, loan, insurance, road tax, 0 is typically not valid unless specified.
+                        // However, for *newly added estimated costs* (maintenance, tires, depreciation), 0 *is* a valid user input if they have no estimate.
+                        isValid = false;
+                    }
+                     else if (inputElement.min && value < parseFloat(inputElement.min)) {
+                        isValid = false;
+                    } else if (inputElement.max && value > parseFloat(inputElement.max)) {
+                        isValid = false;
+                    }
+                }
+
+                if (!isValid) {
+                    errorElement.classList.remove('hidden');
+                } else {
+                    errorElement.classList.add('hidden');
+                }
+                return isValid;
+            }
+
+            /**
+             * Validates all input fields and displays error messages if necessary.
+             * @returns {boolean} True if all inputs are valid, false otherwise.
+             */
+            function validateAllInputs() {
+                let allValid = true;
+
+                // General input validation
+                allValid = validateField(gasolineCostInput, gasolineError) && allValid;
+                allValid = validateField(electricityCostInput, electricityError) && allValid;
+                allValid = validateField(dailyKmInput, dailyKmError) && allValid;
+                allValid = validateField(electricPercentageInput, electricPercentageError) && allValid;
+
+                // Car 1 validation
+                allValid = validateField(car1NameInput, car1NameError, false, true) && allValid;
+                allValid = validateField(car1FuelConsumptionInput, car1FuelConsumptionError, true) && allValid; // Fuel consumption can be 0 (e.g. pure EV)
+                allValid = validateField(car1ElectricRangeInput, car1ElectricRangeError, true) && allValid; // Electric range can be 0
+                allValid = validateField(car1BatteryCapacityInput, car1BatteryCapacityError, true) && allValid; // Battery capacity can be 0
+                allValid = validateField(car1LoanPaymentInput, car1LoanError, true) && allValid; // Loan can be 0
+                allValid = validateField(car1InsuranceCostInput, car1InsuranceError, true) && allValid; // Insurance can be 0
+                allValid = validateField(car1RoadTaxAnnualInput, car1RoadTaxError, true) && allValid; // Road tax can be 0
+                allValid = validateField(car1MaintenanceCostInput, car1MaintenanceError, true) && allValid; // Maintenance can be 0
+                allValid = validateField(car1TireCostInput, car1TireError, true) && allValid; // Tire cost can be 0
+                allValid = validateField(car1DepreciationCostInput, car1DepreciationError, true) && allValid; // Depreciation can be 0
+
+                // Car 2 validation
+                allValid = validateField(car2NameInput, car2NameError, false, true) && allValid;
+                allValid = validateField(car2FuelConsumptionInput, car2FuelConsumptionError, true) && allValid;
+                allValid = validateField(car2ElectricRangeInput, car2ElectricRangeError, true) && allValid;
+                allValid = validateField(car2BatteryCapacityInput, car2BatteryCapacityError, true) && allValid;
+                allValid = validateField(car2LoanPaymentInput, car2LoanError, true) && allValid;
+                allValid = validateField(car2InsuranceCostInput, car2InsuranceError, true) && allValid;
+                allValid = validateField(car2RoadTaxAnnualInput, car2RoadTaxError, true) && allValid;
+                allValid = validateField(car2MaintenanceCostInput, car2MaintenanceError, true) && allValid;
+                allValid = validateField(car2TireCostInput, car2TireError, true) && allValid;
+                allValid = validateField(car2DepreciationCostInput, car2DepreciationError, true) && allValid;
+
+                return allValid;
+            }
+
+
+            /**
+             * Calcola i costi giornalieri di energia (carburante ed elettricità) per un veicolo.
+             * @param {object} carEnergySpecs - Oggetto contenente le specifiche energetiche dell'auto:
+             * - fuelConsumptionL_100km: number (consumo carburante in L/100km)
+             * - electricRangeKm: number (autonomia elettrica in km)
+             * - batteryCapacityKWh: number (capacità batteria in kWh)
+             * @param {number} gasolineCost - Costo della benzina al litro.
+             * @param {number} electricityCost - Costo dell'elettricità al kWh.
+             * @param {number} dailyKm - Chilometri percorsi al giorno.
+             * @param {number} electricPercentage - Percentuale di guida in elettrico desiderata (da 0.0 a 1.0).
+             * @returns {object} Un oggetto con i costi giornalieri di elettricità e carburante.
+             */
+            function calculateDailyEnergyCosts(carEnergySpecs, gasolineCost, electricityCost, dailyKm, electricPercentage) {
+                let electricConsumedKWh = 0;
+                let fuelConsumedL = 0;
+
+                const electricKmPotential = dailyKm * electricPercentage; // Distanza che l'utente vuole coprire in EV
+
+                let electricEfficiencyKWh_100km = 0;
+                // Calcola l'efficienza elettrica solo se la capacità della batteria e l'autonomia elettrica sono positive
+                if (carEnergySpecs.electricRangeKm > 0 && carEnergySpecs.batteryCapacityKWh > 0) {
+                    electricEfficiencyKWh_100km = (carEnergySpecs.batteryCapacityKWh / carEnergySpecs.electricRangeKm) * 100;
+                }
+
+                // Km effettivamente percorsi in elettrico (non più dell'autonomia massima del veicolo)
+                const actualElectricKm = Math.min(electricKmPotential, carEnergySpecs.electricRangeKm);
+                electricConsumedKWh = (actualElectricKm / 100) * electricEfficiencyKWh_100km;
+
+                // Km rimanenti da coprire con carburante
+                const remainingKm = dailyKm - actualElectricKm;
+                fuelConsumedL = (remainingKm / 100) * carEnergySpecs.fuelConsumptionL_100km;
+
+                return {
+                    electricDailyCost: electricConsumedKWh * electricityCost,
+                    fuelDailyCost: fuelConsumedL * gasolineCost
+                };
+            }
+
+            // Event listener for the calculate button
+            calculateButton.addEventListener('click', () => {
+                // Validate all inputs before proceeding with calculations
+                if (!validateAllInputs()) {
+                    resultsSection.classList.add('hidden'); // Hide results if inputs are invalid
+                    return;
+                }
+
+                // Parse general input values
+                const gasolineCost = parseFloat(gasolineCostInput.value);
+                const electricityCost = parseFloat(electricityCostInput.value);
+                const dailyKm = parseFloat(dailyKmInput.value);
+                const electricPercentage = parseFloat(electricPercentageInput.value) / 100; // Convert to decimal (e.g., 70 -> 0.7)
+
+                // Define average days per month for conversion
+                const AVERAGE_DAYS_PER_MONTH = 30.44; // Approx. 365.25 / 12
+
+                // --- Calcola per Auto 1 ---
+                const car1Specs = {
+                    name: car1NameInput.value.trim(),
+                    fuelConsumptionL_100km: parseFloat(car1FuelConsumptionInput.value),
+                    electricRangeKm: parseFloat(car1ElectricRangeInput.value),
+                    batteryCapacityKWh: parseFloat(car1BatteryCapacityInput.value),
+                    loanPaymentMonthly: parseFloat(car1LoanPaymentInput.value),
+                    insuranceCostMonthly: parseFloat(car1InsuranceCostInput.value),
+                    roadTaxAnnual: parseFloat(car1RoadTaxAnnualInput.value),
+                    maintenanceCostMonthly: parseFloat(car1MaintenanceCostInput.value),
+                    tireCostMonthly: parseFloat(car1TireCostInput.value),
+                    depreciationCostMonthly: parseFloat(car1DepreciationCostInput.value)
+                };
+
+                const car1EnergyCostsDaily = calculateDailyEnergyCosts(car1Specs, gasolineCost, electricityCost, dailyKm, electricPercentage);
+
+                const car1ElectricCostMonthly = car1EnergyCostsDaily.electricDailyCost * AVERAGE_DAYS_PER_MONTH;
+                const car1FuelCostMonthly = car1EnergyCostsDaily.fuelDailyCost * AVERAGE_DAYS_PER_MONTH;
+                const car1RoadTaxMonthly = car1Specs.roadTaxAnnual / 12;
+
+                const car1TotalCostMonthly = car1ElectricCostMonthly +
+                                            car1FuelCostMonthly +
+                                            car1Specs.loanPaymentMonthly +
+                                            car1Specs.insuranceCostMonthly +
+                                            car1RoadTaxMonthly +
+                                            car1Specs.maintenanceCostMonthly +
+                                            car1Specs.tireCostMonthly +
+                                            car1Specs.depreciationCostMonthly;
+
+                // Update display for Car 1
+                car1ResultNameSpan.textContent = car1Specs.name;
+                car1ElectricCostMonthlySpan.textContent = `€${car1ElectricCostMonthly.toFixed(2)}`;
+                car1FuelCostMonthlySpan.textContent = `€${car1FuelCostMonthly.toFixed(2)}`;
+                car1LoanPaymentMonthlySpan.textContent = `€${car1Specs.loanPaymentMonthly.toFixed(2)}`;
+                car1InsuranceCostMonthlySpan.textContent = `€${car1Specs.insuranceCostMonthly.toFixed(2)}`;
+                car1RoadTaxMonthlySpan.textContent = `€${car1RoadTaxMonthly.toFixed(2)}`;
+                car1MaintenanceCostMonthlySpan.textContent = `€${car1Specs.maintenanceCostMonthly.toFixed(2)}`;
+                car1TireCostMonthlySpan.textContent = `€${car1Specs.tireCostMonthly.toFixed(2)}`;
+                car1DepreciationCostMonthlySpan.textContent = `€${car1Specs.depreciationCostMonthly.toFixed(2)}`;
+                car1TotalCostMonthlySpan.textContent = `€${car1TotalCostMonthly.toFixed(2)}`;
+
+                // --- Calcola per Auto 2 ---
+                const car2Specs = {
+                    name: car2NameInput.value.trim(),
+                    fuelConsumptionL_100km: parseFloat(car2FuelConsumptionInput.value),
+                    electricRangeKm: parseFloat(car2ElectricRangeInput.value),
+                    batteryCapacityKWh: parseFloat(car2BatteryCapacityInput.value),
+                    loanPaymentMonthly: parseFloat(car2LoanPaymentInput.value),
+                    insuranceCostMonthly: parseFloat(car2InsuranceCostInput.value),
+                    roadTaxAnnual: parseFloat(car2RoadTaxAnnualInput.value),
+                    maintenanceCostMonthly: parseFloat(car2MaintenanceCostInput.value),
+                    tireCostMonthly: parseFloat(car2TireCostInput.value),
+                    depreciationCostMonthly: parseFloat(car2DepreciationCostInput.value)
+                };
+
+                const car2EnergyCostsDaily = calculateDailyEnergyCosts(car2Specs, gasolineCost, electricityCost, dailyKm, electricPercentage);
+
+                const car2ElectricCostMonthly = car2EnergyCostsDaily.electricDailyCost * AVERAGE_DAYS_PER_MONTH;
+                const car2FuelCostMonthly = car2EnergyCostsDaily.fuelDailyCost * AVERAGE_DAYS_PER_MONTH;
+                const car2RoadTaxMonthly = car2Specs.roadTaxAnnual / 12;
+
+                const car2TotalCostMonthly = car2ElectricCostMonthly +
+                                            car2FuelCostMonthly +
+                                            car2Specs.loanPaymentMonthly +
+                                            car2Specs.insuranceCostMonthly +
+                                            car2RoadTaxMonthly +
+                                            car2Specs.maintenanceCostMonthly +
+                                            car2Specs.tireCostMonthly +
+                                            car2Specs.depreciationCostMonthly;
+
+                // Update display for Car 2
+                car2ResultNameSpan.textContent = car2Specs.name;
+                car2ElectricCostMonthlySpan.textContent = `€${car2ElectricCostMonthly.toFixed(2)}`;
+                car2FuelCostMonthlySpan.textContent = `€${car2FuelCostMonthly.toFixed(2)}`;
+                car2LoanPaymentMonthlySpan.textContent = `€${car2Specs.loanPaymentMonthly.toFixed(2)}`;
+                car2InsuranceCostMonthlySpan.textContent = `€${car2Specs.insuranceCostMonthly.toFixed(2)}`;
+                car2RoadTaxMonthlySpan.textContent = `€${car2RoadTaxMonthly.toFixed(2)}`;
+                car2MaintenanceCostMonthlySpan.textContent = `€${car2Specs.maintenanceCostMonthly.toFixed(2)}`;
+                car2TireCostMonthlySpan.textContent = `€${car2Specs.tireCostMonthly.toFixed(2)}`;
+                car2DepreciationCostMonthlySpan.textContent = `€${car2Specs.depreciationCostMonthly.toFixed(2)}`;
+                car2TotalCostMonthlySpan.textContent = `€${car2TotalCostMonthly.toFixed(2)}`;
+
+                resultsSection.classList.remove('hidden'); // Show the results section
+            });
+
+            // Perform an initial calculation on page load to display default values
+            calculateButton.click();
+        });
+    </script>
+</body>
+</html>
