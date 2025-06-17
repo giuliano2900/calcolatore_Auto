@@ -43,13 +43,20 @@
             font-size: 0.95rem;
         }
         .input-group input[type="number"],
-        .input-group input[type="text"] {
+        .input-group input[type="text"],
+        .input-group select { /* Added select for styling consistency */
             padding: 0.95rem; /* Padding maggiore per un touch target più confortevole */
             border: 1px solid #d1d5db; /* Bordo grigio chiaro */
             border-radius: 0.75rem; /* Input con angoli arrotondati */
             font-size: 1rem;
             transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
             -moz-appearance: textfield; /* Nasconde le frecce in Firefox */
+            appearance: none; /* Removes default select arrow for custom styling */
+            background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%234a5568%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E'); /* Custom arrow for select */
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.5em;
+            padding-right: 2.5rem; /* Make space for the custom arrow */
         }
         .input-group input[type="number"]::-webkit-outer-spin-button,
         .input-group input[type="number"]::-webkit-inner-spin-button {
@@ -57,7 +64,8 @@
             margin: 0;
         }
         .input-group input[type="number"]:focus,
-        .input-group input[type="text"]:focus {
+        .input-group input[type="text"]:focus,
+        .input-group select:focus { /* Added select for focus styling */
             outline: none;
             border-color: #4f46e5; /* Indaco per il focus */
             box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2); /* Anello di focus discreto */
@@ -185,38 +193,45 @@
             <!-- Dati Auto 1 -->
             <div class="car-section-title">Dati Auto 1</div>
             <div class="input-group">
-                <label for="car1Name">Nome Auto 1 (es. Leapmotor C10 REEV):</label>
-                <input type="text" id="car1Name" value="Leapmotor C10 REEV">
+                <label for="car1Select">Seleziona Auto 1:</label>
+                <select id="car1Select">
+                    <option value="">Caricamento...</option>
+                </select>
+                <p id="car1SelectError" class="error-message hidden">Seleziona un'auto valida.</p>
+            </div>
+            <div class="input-group">
+                <label for="car1Name">Nome Auto 1 (o personalizza):</label>
+                <input type="text" id="car1Name" value="">
                 <p id="car1NameError" class="error-message hidden">Inserisci il nome dell'auto 1.</p>
             </div>
             <div class="input-group">
                 <label for="car1FuelConsumption">Consumo Carburante Auto 1 (L/100km, a batteria scarica):</label>
-                <input type="number" id="car1FuelConsumption" value="0.4" min="0" step="0.01">
+                <input type="number" id="car1FuelConsumption" value="0.0" min="0" step="0.01">
                 <p id="car1FuelConsumptionError" class="error-message hidden">Inserisci un valore valido.</p>
             </div>
             <div class="input-group">
                 <label for="car1ElectricRange">Autonomia Elettrica Auto 1 (km):</label>
-                <input type="number" id="car1ElectricRange" value="145" min="0" step="1">
+                <input type="number" id="car1ElectricRange" value="0" min="0" step="1">
                 <p id="car1ElectricRangeError" class="error-message hidden">Inserisci un valore valido.</p>
             </div>
             <div class="input-group">
                 <label for="car1BatteryCapacity">Capacità Batteria Auto 1 (kWh):</label>
-                <input type="number" id="car1BatteryCapacity" value="28.4" min="0.1" step="0.1">
+                <input type="number" id="car1BatteryCapacity" value="0.0" min="0" step="0.1">
                 <p id="car1BatteryCapacityError" class="error-message hidden">Inserisci un valore valido.</p>
             </div>
             <div class="input-group">
                 <label for="car1LoanPayment">Rata Mensile Finanziamento Auto 1 (€):</label>
-                <input type="number" id="car1LoanPayment" value="199" min="0" step="1">
+                <input type="number" id="car1LoanPayment" value="0" min="0" step="1">
                 <p id="car1LoanError" class="error-message hidden">Inserisci un valore valido per la rata.</p>
             </div>
             <div class="input-group">
                 <label for="car1InsuranceCost">Costo Mensile Assicurazione Auto 1 (€):</label>
-                <input type="number" id="car1InsuranceCost" value="50" min="0" step="1">
+                <input type="number" id="car1InsuranceCost" value="0" min="0" step="1">
                 <p id="car1InsuranceError" class="error-message hidden">Inserisci un valore valido per l'assicurazione.</p>
             </div>
             <div class="input-group">
                 <label for="car1RoadTaxAnnual">Costo Annuale Bollo Auto 1 (€):</label>
-                <input type="number" id="car1RoadTaxAnnual" value="200" min="0" step="1">
+                <input type="number" id="car1RoadTaxAnnual" value="0" min="0" step="1">
                 <p id="car1RoadTaxError" class="error-message hidden">Inserisci un valore valido per il bollo.</p>
             </div>
             <div class="input-group">
@@ -239,38 +254,45 @@
             <!-- Dati Auto 2 -->
             <div class="car-section-title">Dati Auto 2</div>
             <div class="input-group">
-                <label for="car2Name">Nome Auto 2 (es. Hyundai Tucson PHEV):</label>
-                <input type="text" id="car2Name" value="Hyundai Tucson Plug-in Hybrid">
+                <label for="car2Select">Seleziona Auto 2:</label>
+                <select id="car2Select">
+                    <option value="">Caricamento...</option>
+                </select>
+                <p id="car2SelectError" class="error-message hidden">Seleziona un'auto valida.</p>
+            </div>
+            <div class="input-group">
+                <label for="car2Name">Nome Auto 2 (o personalizza):</label>
+                <input type="text" id="car2Name" value="">
                 <p id="car2NameError" class="error-message hidden">Inserisci il nome dell'auto 2.</p>
             </div>
             <div class="input-group">
                 <label for="car2FuelConsumption">Consumo Carburante Auto 2 (L/100km, a batteria scarica):</label>
-                <input type="number" id="car2FuelConsumption" value="6.7" min="0" step="0.01">
+                <input type="number" id="car2FuelConsumption" value="0.0" min="0" step="0.01">
                 <p id="car2FuelConsumptionError" class="error-message hidden">Inserisci un valore valido.</p>
             </div>
             <div class="input-group">
                 <label for="car2ElectricRange">Autonomia Elettrica Auto 2 (km):</label>
-                <input type="number" id="car2ElectricRange" value="71" min="0" step="1">
+                <input type="number" id="car2ElectricRange" value="0" min="0" step="1">
                 <p id="car2ElectricRangeError" class="error-message hidden">Inserisci un valore valido.</p>
             </div>
             <div class="input-group">
                 <label for="car2BatteryCapacity">Capacità Batteria Auto 2 (kWh):</label>
-                <input type="number" id="car2BatteryCapacity" value="13.8" min="0.1" step="0.1">
+                <input type="number" id="car2BatteryCapacity" value="0.0" min="0" step="0.1">
                 <p id="car2BatteryCapacityError" class="error-message hidden">Inserisci un valore valido.</p>
             </div>
             <div class="input-group">
                 <label for="car2LoanPayment">Rata Mensile Finanziamento Auto 2 (€):</label>
-                <input type="number" id="car2LoanPayment" value="326" min="0" step="1">
+                <input type="number" id="car2LoanPayment" value="0" min="0" step="1">
                 <p id="car2LoanError" class="error-message hidden">Inserisci un valore valido per la rata.</p>
             </div>
             <div class="input-group">
                 <label for="car2InsuranceCost">Costo Mensile Assicurazione Auto 2 (€):</label>
-                <input type="number" id="car2InsuranceCost" value="60" min="0" step="1">
+                <input type="number" id="car2InsuranceCost" value="0" min="0" step="1">
                 <p id="car2InsuranceError" class="error-message hidden">Inserisci un valore valido per l'assicurazione.</p>
             </div>
             <div class="input-group">
                 <label for="car2RoadTaxAnnual">Costo Annuale Bollo Auto 2 (€):</label>
-                <input type="number" id="car2RoadTaxAnnual" value="300" min="0" step="1">
+                <input type="number" id="car2RoadTaxAnnual" value="0" min="0" step="1">
                 <p id="car2RoadTaxError" class="error-message hidden">Inserisci un valore valido per il bollo.</p>
             </div>
             <div class="input-group">
@@ -296,7 +318,7 @@
             <h2 class="text-2xl font-bold text-gray-900">Costi Mensili Stimati</h2>
 
             <div class="car-result">
-                <h3 id="car1ResultName">Leapmotor C10 REEV</h3>
+                <h3 id="car1ResultName">Auto 1</h3>
                 <p>Costo Elettricità Mensile: <span id="car1ElectricCostMonthly" class="cost-value">€0.00</span></p>
                 <p>Costo Carburante Mensile: <span id="car1FuelCostMonthly" class="cost-value">€0.00</span></p>
                 <p>Rata Finanziamento Mensile: <span id="car1LoanPaymentMonthly" class="cost-value">€0.00</span></p>
@@ -309,7 +331,7 @@
             </div>
 
             <div class="car-result">
-                <h3 id="car2ResultName">Hyundai Tucson Plug-in Hybrid</h3>
+                <h3 id="car2ResultName">Auto 2</h3>
                 <p>Costo Elettricità Mensile: <span id="car2ElectricCostMonthly" class="cost-value">€0.00</span></p>
                 <p>Costo Carburante Mensile: <span id="car2FuelCostMonthly" class="cost-value">€0.00</span></p>
                 <p>Rata Finanziamento Mensile: <span id="car2LoanPaymentMonthly" class="cost-value">€0.00</span></p>
@@ -324,7 +346,9 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        let carsData = []; // This will store the loaded car data
+
+        document.addEventListener('DOMContentLoaded', async () => {
             // General Inputs
             const gasolineCostInput = document.getElementById('gasolineCost');
             const electricityCostInput = document.getElementById('electricityCost');
@@ -334,6 +358,7 @@
             const resultsSection = document.getElementById('resultsSection');
 
             // Car 1 Inputs
+            const car1Select = document.getElementById('car1Select');
             const car1NameInput = document.getElementById('car1Name');
             const car1FuelConsumptionInput = document.getElementById('car1FuelConsumption');
             const car1ElectricRangeInput = document.getElementById('car1ElectricRange');
@@ -346,6 +371,7 @@
             const car1DepreciationCostInput = document.getElementById('car1DepreciationCost');
 
             // Car 2 Inputs
+            const car2Select = document.getElementById('car2Select');
             const car2NameInput = document.getElementById('car2Name');
             const car2FuelConsumptionInput = document.getElementById('car2FuelConsumption');
             const car2ElectricRangeInput = document.getElementById('car2ElectricRange');
@@ -388,6 +414,7 @@
             const electricPercentageError = document.getElementById('electricPercentageError');
 
             // Error message elements for Car 1
+            const car1SelectError = document.getElementById('car1SelectError');
             const car1NameError = document.getElementById('car1NameError');
             const car1FuelConsumptionError = document.getElementById('car1FuelConsumptionError');
             const car1ElectricRangeError = document.getElementById('car1ElectricRangeError');
@@ -400,6 +427,7 @@
             const car1DepreciationError = document.getElementById('car1DepreciationError');
 
             // Error message elements for Car 2
+            const car2SelectError = document.getElementById('car2SelectError');
             const car2NameError = document.getElementById('car2NameError');
             const car2FuelConsumptionError = document.getElementById('car2FuelConsumptionError');
             const car2ElectricRangeError = document.getElementById('car2ElectricRangeError');
@@ -413,9 +441,9 @@
 
             /**
              * Validates a single input field and shows/hides its error message.
-             * @param {HTMLInputElement} inputElement - The input field to validate.
+             * @param {HTMLInputElement|HTMLSelectElement} inputElement - The input or select field to validate.
              * @param {HTMLElement} errorElement - The corresponding error message element.
-             * @param {boolean} allowZero - If true, 0 is considered a valid number.
+             * @param {boolean} allowZero - If true, 0 is considered a valid number for number inputs.
              * @param {boolean} isText - If true, validates as non-empty text.
              * @returns {boolean} True if input is valid, false otherwise.
              */
@@ -425,14 +453,22 @@
                     if (inputElement.value.trim() === '') {
                         isValid = false;
                     }
-                } else {
+                } else if (inputElement.tagName === 'SELECT') {
+                    if (inputElement.value === '') { // No selection made
+                        isValid = false;
+                    }
+                }
+                else {
                     const value = parseFloat(inputElement.value);
-                    if (isNaN(value) || (value < 0 && !allowZero)) { // Negative values are not allowed unless explicitly allowedZero and value is 0
+                    if (isNaN(value) || (value < 0 && !allowZero)) {
                         isValid = false;
-                    } else if (!allowZero && value === 0 && inputElement.id !== 'car1MaintenanceCost' && inputElement.id !== 'car1TireCost' && inputElement.id !== 'car1DepreciationCost' && inputElement.id !== 'car2MaintenanceCost' && inputElement.id !== 'car2TireCost' && inputElement.id !== 'car2DepreciationCost') {
-                        // For core costs like gasoline, electricity, daily km, loan, insurance, road tax, 0 is typically not valid unless specified.
-                        // However, for *newly added estimated costs* (maintenance, tires, depreciation), 0 *is* a valid user input if they have no estimate.
-                        isValid = false;
+                    } else if (!allowZero && value === 0 && !['car1MaintenanceCost', 'car1TireCost', 'car1DepreciationCost', 'car2MaintenanceCost', 'car2TireCost', 'car2DepreciationCost'].includes(inputElement.id)) {
+                         // Core costs (gasoline, electricity, daily km, loan, insurance, road tax) should ideally not be 0 unless specified.
+                         // Estimated costs (maintenance, tires, depreciation) *can* be 0 if no estimate.
+                         // This logic might need further refinement based on strictness required for 0 values.
+                         if (value === 0 && inputElement.min !== "0") { // If min is not 0, and value is 0, it's invalid unless allowed
+                            isValid = false;
+                         }
                     }
                      else if (inputElement.min && value < parseFloat(inputElement.min)) {
                         isValid = false;
@@ -463,6 +499,7 @@
                 allValid = validateField(electricPercentageInput, electricPercentageError) && allValid;
 
                 // Car 1 validation
+                allValid = validateField(car1Select, car1SelectError) && allValid;
                 allValid = validateField(car1NameInput, car1NameError, false, true) && allValid;
                 allValid = validateField(car1FuelConsumptionInput, car1FuelConsumptionError, true) && allValid; // Fuel consumption can be 0 (e.g. pure EV)
                 allValid = validateField(car1ElectricRangeInput, car1ElectricRangeError, true) && allValid; // Electric range can be 0
@@ -475,6 +512,7 @@
                 allValid = validateField(car1DepreciationCostInput, car1DepreciationError, true) && allValid; // Depreciation can be 0
 
                 // Car 2 validation
+                allValid = validateField(car2Select, car2SelectError) && allValid;
                 allValid = validateField(car2NameInput, car2NameError, false, true) && allValid;
                 allValid = validateField(car2FuelConsumptionInput, car2FuelConsumptionError, true) && allValid;
                 allValid = validateField(car2ElectricRangeInput, car2ElectricRangeError, true) && allValid;
@@ -489,6 +527,25 @@
                 return allValid;
             }
 
+            /**
+             * Populates the input fields for a specific car based on selected car data.
+             * @param {object} carData - The selected car object from the JSON.
+             * @param {string} carPrefix - 'car1' or 'car2' to identify which set of inputs to fill.
+             */
+            function populateCarInputs(carData, carPrefix) {
+                document.getElementById(`${carPrefix}Name`).value = `${carData.marca} ${carData.modello} (${carData.anno})`;
+                document.getElementById(`${carPrefix}FuelConsumption`).value = carData.consumo_carburante_l_100km_batteria_scarica;
+                document.getElementById(`${carPrefix}ElectricRange`).value = carData.autonomia_elettrica_km_wltp;
+                document.getElementById(`${carPrefix}BatteryCapacity`).value = carData.capacita_batteria_kwh;
+                // You might want to clear or set default for financial inputs if selecting a new car
+                // For now, leaving them as is or with their default values.
+                // document.getElementById(`${carPrefix}LoanPayment`).value = 0;
+                // document.getElementById(`${carPrefix}InsuranceCost`).value = 0;
+                // document.getElementById(`${carPrefix}RoadTaxAnnual`).value = 0;
+                // document.getElementById(`${carPrefix}MaintenanceCost`).value = 0;
+                // document.getElementById(`${carPrefix}TireCost`).value = 0;
+                // document.getElementById(`${carPrefix}DepreciationCost`).value = 0;
+            }
 
             /**
              * Calcola i costi giornalieri di energia (carburante ed elettricità) per un veicolo.
@@ -527,6 +584,87 @@
                     fuelDailyCost: fuelConsumedL * gasolineCost
                 };
             }
+
+            // Function to load cars data from JSON file
+            async function loadCarsData() {
+                try {
+                    // Use new URL() for more robust URL parsing, especially in certain environments
+                    const response = await fetch(new URL('cars_data.json', window.location.href)); // Path to your JSON file
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    carsData = await response.json();
+                    populateSelects();
+                } catch (error) {
+                    console.error("Errore nel caricamento del file JSON delle auto:", error);
+                    car1Select.innerHTML = '<option value="">Errore caricamento dati</option>';
+                    car2Select.innerHTML = '<option value="">Errore caricamento dati</option>';
+                }
+            }
+
+            // Function to populate the select dropdowns
+            function populateSelects() {
+                car1Select.innerHTML = '<option value="">-- Seleziona un\'auto --</option>';
+                car2Select.innerHTML = '<option value="">-- Seleziona un\'auto --</option>';
+
+                carsData.forEach((car, index) => {
+                    const option1 = document.createElement('option');
+                    option1.value = index; // Use index to easily retrieve data later
+                    option1.textContent = `${car.marca} ${car.modello} (${car.anno}) - ${car.tipo_alimentazione}`;
+                    car1Select.appendChild(option1);
+
+                    const option2 = document.createElement('option');
+                    option2.value = index;
+                    option2.textContent = `${car.marca} ${car.modello} (${car.anno}) - ${car.tipo_alimentazione}`;
+                    car2Select.appendChild(option2);
+                });
+
+                // Set default selections based on previous values if possible, or first available car
+                if (carsData.length > 0) {
+                    car1Select.value = 0; // Select the first car by default
+                    populateCarInputs(carsData[0], 'car1');
+                    car2Select.value = 1; // Select the second car by default, if available
+                    if (carsData.length > 1) {
+                        populateCarInputs(carsData[1], 'car2');
+                    } else {
+                        // If only one car, clear car2 fields or set to default 0s
+                        car2NameInput.value = '';
+                        car2FuelConsumptionInput.value = 0;
+                        car2ElectricRangeInput.value = 0;
+                        car2BatteryCapacityInput.value = 0;
+                    }
+                }
+                calculateButton.click(); // Perform initial calculation with default selected cars
+            }
+
+            // Event listener for car1Select change
+            car1Select.addEventListener('change', (event) => {
+                const selectedIndex = event.target.value;
+                if (selectedIndex !== "") {
+                    populateCarInputs(carsData[parseInt(selectedIndex)], 'car1');
+                } else {
+                    // Clear inputs if no car is selected
+                    car1NameInput.value = '';
+                    car1FuelConsumptionInput.value = 0;
+                    car1ElectricRangeInput.value = 0;
+                    car1BatteryCapacityInput.value = 0;
+                }
+            });
+
+            // Event listener for car2Select change
+            car2Select.addEventListener('change', (event) => {
+                const selectedIndex = event.target.value;
+                if (selectedIndex !== "") {
+                    populateCarInputs(carsData[parseInt(selectedIndex)], 'car2');
+                } else {
+                    // Clear inputs if no car is selected
+                    car2NameInput.value = '';
+                    car2FuelConsumptionInput.value = 0;
+                    car2ElectricRangeInput.value = 0;
+                    car2BatteryCapacityInput.value = 0;
+                }
+            });
+
 
             // Event listener for the calculate button
             calculateButton.addEventListener('click', () => {
@@ -630,8 +768,8 @@
                 resultsSection.classList.remove('hidden'); // Show the results section
             });
 
-            // Perform an initial calculation on page load to display default values
-            calculateButton.click();
+            // Load cars data and then perform initial calculation
+            loadCarsData();
         });
     </script>
 </body>
